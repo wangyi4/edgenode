@@ -1,7 +1,7 @@
 ################################################################################
 # Copyright 2019 Intel Corporation and Smart-Edge.com, Inc. All rights reserved
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
+# Licensed under the Apache License, Version 1.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
@@ -17,10 +17,12 @@
 export GO111MODULE = on
 
 .PHONY: build appliance edgedns clean build-docker lint test help
-TMP_DIR:=$(shell mktemp -d)
+#TMP_DIR:=$(shell mktemp -d)
+TMP_DIR:=./tmp
 BUILD_DIR ?=dist
 
 VER:=1.0
+export RTE_SDK = /opt/dpdk-18.08
 
 build: edalibs appliance edgedns nts
 
@@ -44,7 +46,18 @@ clean:
 	make clean -C internal/nts
 	make clean -C internal/nts/eda_libs
 
+nts-image: nts
+	mkdir -p "${TMP_DIR}/nts"
+	cp internal/nts/build/nes-daemon "${TMP_DIR}/nts"
+	cp internal/nts/kni_docker_daemon.py "${TMP_DIR}/nts"
+	cp internal/nts/entrypoint.sh "${TMP_DIR}/nts"
+	cp internal/nts/build/libnes_api_shared.so "${TMP_DIR}/nts"
+	cp internal/nts/Dockerfile "${TMP_DIR}/Dockerfile_nts"
+	cp docker-compose.yml "${TMP_DIR}"
+	cd "${TMP_DIR}" && VER=${VER} docker-compose build nts
+
 build-docker: build
+	mkdir -p ${TMP_DIR}
 	cp build/appliance/Dockerfile "${TMP_DIR}/Dockerfile_appliance"
 	cp build/appliance/entrypoint.sh "${TMP_DIR}"
 	cp /opt/dpdk-18.08/usertools/dpdk-devbind.py "${TMP_DIR}"
@@ -60,7 +73,7 @@ build-docker: build
 	cp docker-compose.yml "${TMP_DIR}"
 	cd "${TMP_DIR}" && VER=${VER} docker-compose build
 	ls "${TMP_DIR}"
-	rm -rf "${TMP_DIR}"
+	#rm -rf "${TMP_DIR}"
 
 run-docker:
 	VER=${VER} docker-compose up --no-build

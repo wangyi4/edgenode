@@ -54,3 +54,5 @@ require (
 )
 
 replace github.com/docker/docker => github.com/docker/engine v0.0.0-20190423201726-d2cfbce3f3b0
+
+go 1.13

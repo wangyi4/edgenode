@@ -14,9 +14,22 @@
 
 FROM centos:7.6.1810
 
+ENV http_proxy "http://child-prc.intel.com:913"
+ENV https_proxy "http://child-prc.intel.com:913"
+ENV ftp_proxy "http://child-prc.intel.com:913"
+ENV no_proxy "127.0.0.1,localhost,.intel.com"
+
 RUN yum install -y libvirt-devel pciutils
+
+#unset proxy
+ENV http_proxy=
+ENV https_proxy=
+ENV ftp_proxy=
+ENV no_proxy=
+
 WORKDIR /root/
 COPY ./appliance .
 COPY ./dpdk-devbind.py .
 COPY ./entrypoint.sh .
 CMD ["./entrypoint.sh"]
+
