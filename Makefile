@@ -23,6 +23,7 @@ BUILD_DIR ?=dist
 
 VER:=1.0
 export RTE_SDK = /opt/dpdk-18.08
+export RTE_TARGET = x86_64-native-linuxapp-gcc
 
 build: edalibs appliance edgedns nts
 
