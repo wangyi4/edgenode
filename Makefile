@@ -22,7 +22,7 @@ TMP_DIR:=./tmp
 BUILD_DIR ?=dist
 
 VER:=1.0
-export RTE_SDK = /opt/dpdk-18.08
+export RTE_SDK = /home/wangyi4/dpdk-18.11/
 export RTE_TARGET = x86_64-native-linuxapp-gcc
 
 build: edalibs appliance edgedns nts
@@ -61,7 +61,7 @@ build-docker: build
 	mkdir -p ${TMP_DIR}
 	cp build/appliance/Dockerfile "${TMP_DIR}/Dockerfile_appliance"
 	cp build/appliance/entrypoint.sh "${TMP_DIR}"
-	cp /opt/dpdk-18.08/usertools/dpdk-devbind.py "${TMP_DIR}"
+	cp ${RTE_SDK}/usertools/dpdk-devbind.py "${TMP_DIR}"
 	cp "${BUILD_DIR}/appliance" "${TMP_DIR}"
 	cp build/edgednssvr/Dockerfile "${TMP_DIR}/Dockerfile_edgednssvr"
 	cp "${BUILD_DIR}/edgednssvr" "${TMP_DIR}"
