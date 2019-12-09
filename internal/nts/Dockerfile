@@ -14,11 +14,26 @@
 
 FROM centos:7.6.1810
 
+ENV http_proxy "http://child-prc.intel.com:913"
+ENV https_proxy "http://child-prc.intel.com:913"
+ENV ftp_proxy "http://child-prc.intel.com:913"
+ENV no_proxy "127.0.0.1,localhost,.intel.com"
+
+RUN echo "proxy=http://child-prc.intel.com:913" >> /etc/yum.conf
+
+
 RUN yum upgrade ca-certificates && \
     yum install -y epel-release && \
-    yum install -y numactl-devel libhugetlbfs-utils iproute python python-pip && \
-    pip install docker && \
-    pip install configparser
+    yum install -y numactl-devel libhugetlbfs-utils iproute python python-pip
+
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple configparser
+RUN pip install -i https://pypi.tuna.tsinghua.edu.cn/simple docker
+
+#unset proxy
+ENV http_proxy=
+ENV https_proxy=
+ENV ftp_proxy=
+ENV no_proxy=
 
 ADD ./nts/nes-daemon /root/
 ADD ./nts/kni_docker_daemon.py /root/

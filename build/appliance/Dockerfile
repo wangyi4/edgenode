@@ -14,11 +14,23 @@
 
 FROM centos:7.6.1810
 
+
+ENV http_proxy "http://child-prc.intel.com:913"
+ENV https_proxy "http://child-prc.intel.com:913"
+ENV ftp_proxy "http://child-prc.intel.com:913"
+ENV no_proxy "127.0.0.1,localhost,.intel.com"
+
 RUN yum install -y libvirt-devel \
         pciutils which \
         unbound openssl \
     && yum clean all
 RUN rpm -ivh https://github.com/alauda/ovs/releases/download/v2.11.1-1/openvswitch-2.11.1-1.el7.x86_64.rpm
+
+#unset proxy
+ENV http_proxy=
+ENV https_proxy=
+ENV ftp_proxy=
+ENV no_proxy=
 
 WORKDIR /root/
 
